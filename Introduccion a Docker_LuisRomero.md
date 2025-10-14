@@ -643,3 +643,157 @@ muestra imágenes disponibles en Docker Hub.
 - docker load -i archivo.tar la restaura en otro sistema.
 
 ### 6. Subiendo nuestras propias imágenes a un repositorio (Docker Hub)
+
+#### 6.1. Paso 1: creando repositorio para almacenar la imagen en Docker Hub
+
+En primer lugar, debéis crearos una cuenta en https://hub.docker.com e iniciar sesión. Una vez
+iniciada sesión, debéis acceder a “Repositories” y ahí a “Create repository”
+
+Tras ello, podréis quedar un repositorio con vuestra cuenta y elegir si dicho repositorio es público o privado
+
+Una vez creado, si tu usuario es “luis” y la imagen se llama “prueba”, podremos referenciarla en distintos contextos como “luis/prueba”
+
+#### 6.2. Paso 2: almacenando imagen local en repositorio Docker Hub
+
+En primer lugar, deberemos iniciar sesión mediante consola al repositorio mediante el comando
+
+    docker login
+
+Una vez iniciada sesión, debemos hacer un “commit” local de la imagen, siguiendo la estructura
+vista en puntos anteriores. Un ejemplo podría ser:
+
+    docker commit -a "Luis" -m "Ubuntu modificado" IDCONTENEDOR luis/prueba
+
+Hecho este “commit” local, debemos subirlo usando “docker push”
+
+    docker push luis/prueba
+
+Una vez hecho eso, si la imagen es pública (o privada con permisos), cualquiera podrá descargarla
+y crear contenedores usando “docker pull” o “docker run”.
+
+### 7. Generar automáticamente nuestras propias imágenes mediante Dockerfile
+
+Docker nos permite generar de forma automática nuestras propias imágenes usando “docker build” y los llamados “Dockerfile”
+
+#### 7.1. Editor Visual Studio Code y plugins asociados a Docker
+
+Los ficheros “Dockerfile” pueden crearse con cualquier editor de texto, una recomendación es el editor multiplataforma “Visual Studio Code”
+
+#### 7.2. Creando nuestro primer Dockerfile
+
+Ejemplo básico:
+
+    FROM ubuntu:latest
+    RUN apt update && apt install -y nano
+    CMD /bin/bash
+
+#### 7.3. Otros comandos importantes de Dockerfile
+
+- EXPOSE: define puertos expuestos.
+- ADD / COPY: copia archivos (ADD permite descomprimir).
+- ENTRYPOINT: define el comando base del contenedor.
+- USER: establece el usuario por defecto.
+- WORKDIR: define el directorio de trabajo.
+- ENV: variables de entorno.
+- ARG, VOLUME, LABEL, HEALTHCHECK: parámetros adicionales útiles.
+
+##### 7.3.1. Comando EXPOSE
+
+La opción EXPOSE nos permite indicar los puertos por defecto expuestos que tendrá un contenedor basado en esta imagen.
+
+##### 7.3.2. Comando ADD/COPY
+
+ADD y COPY son comandos para copiar ficheros de la máquina anfitriona al nuevo contenedor. Se recomienda usar COPY, excepto que queramos descomprimir un “zip”, que ADD permite su descompresión.
+
+##### 7.3.3. Comando ENTRYPOINT
+
+Por defecto, los contenedores Docker están configurados para que ejecuten los comandos que se lancen mediante “/bin/sh -c”. Dicho de otra forma, los comandos que lanzábamos, eran parámetros para “/bin/sh -c”. Podemos cambiar qué comando se usa para esto con ENTRYPOINT.
+
+##### 7.3.4. Comando USER
+
+Por defecto, todos los comandos lanzados en la creación de la imagen se ejecutan con el usuario root (usuario con UID=0). Para poder cambiar esto, podemos usar el comando USER, indicando el nombre de usuario o UID con el que queremos que se ejecute el comando.
+
+##### 7.3.5. Comando WORKDIR
+
+Cada vez que expresamos el comando WORKDIR, estamos cambiando el directorio de la imagen donde ejecutamos los comandos. Si este directorio no existe, se crea.
+
+##### 7.3.6. Comando ENV
+
+El comando ENV nos permite definir variables de entorno por defecto en la imagen.
+
+##### 7.3.7. Otros comandos útiles: ARG, VOLUME, LABEL, HEALTHCHECK
+
+- ARG: permite enviar parámetros al propio “Dockerfile” con la opción “--build-arg” del comando “docker build”.
+- VOLUME: permite establecer volúmenes por defecto en la imágen. Hablaremos de los volúmenes más adelante en el curso.
+- LABEL: permite establecer metadatos dentro de la imagen mediante etiquetas.
+- HEALTHCHECK: permite definir cómo se comprobará si ese contenedor está funcionando correctamente o no.
+
+### 8. Trucos para hacer nuestras imágenes más ligeras
+
+- Usar imágenes base ligeras (ej. Alpine).
+- Evitar instalaciones innecesarias.
+- Unificar comandos en un solo RUN.
+- Limpiar cache (rm -rf /var/lib/apt/lists/*).
+- Usar --no-install-recommends en instalaciones.
+- Analizar Dockerfile con FromLatest.io.
+
+### 9. Bibliografía
+
+- Docker Docs https://docs.docker.com/
+- Visual Studio Code Learn https://code.visualstudio.com/learn
+- FROM:latest https://www.fromlatest.io/#/
+
+## UD 05. Cheatsheet Docker
+
+### 1. Gestión de redes
+
+Creamos la red “redtest”
+
+    docker network create redtest
+
+Nos permite ver el listado de redes existentes
+
+    docker network ls
+
+Borramos la red “redtest”
+
+    docker network rm redtest
+
+Conectamos el contenedor que creamos a la red “redtest”.
+
+    docker run -it --network redtest ubuntu /bin/bash
+
+Conectamos un contenedor a una red.
+
+    docker network connect IDRED IDCONTENEDOR
+
+Desconectamos un contenedor de una red
+
+    docker network disconnect IDRED IDCONTENEDOR
+
+### 2. Volúmenes
+
+Creamos un contenedor y asignamos un volumen con “binding mount”
+
+    docker run -d -it --name appcontainer -v /home/sergi/target:/app nginx:latest
+
+Creamos un contenedor y asignamos un volumen Docker llamado “micontenedor”.
+
+    docker run -d -it --name appcontainer -v micontenedor:/app nginx:latest
+
+Permite crear, listar o eliminar volúmenes Docker.
+
+    docker volume create/ls/rm mivolumen
+
+Permite crear un contenedor y asociar un volumen “tmpfs”.
+
+    docker run -d -it --tmpfs /app nginx
+
+Permite realizar una copia de seguridad de un volumen asociado a “contenedor1” y que se monta en “/datos”.
+Dicha copia finalmente acabará en “/home/sergi/backup” de la máquina anfitrión.
+
+    docker run --rm --volumes-from contenedor1 -v /home/sergi/backup:/backup ubuntu bash -c "cd/datos && tar cvf /backup/copiaseguridad.tar ."
+
+Permite eliminar todos los lúmenes de tu máquina.
+
+    docker volume rm $(docker volume ls -q)
