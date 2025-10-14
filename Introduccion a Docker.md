@@ -498,3 +498,148 @@ Ejemplos:
 El parámetro -it enlaza la entrada y salida de la terminal.
 
 ### 10. Copiando ficheros entre anfitrión y contenedores con  "docker cp"
+
+Copia archivos entre el anfitrión y los contenedores (no entre contenedores):
+
+    docker cp idcontainer:/tmp/prueba ./
+    docker cp ./miFichero idcontainer:/tmp
+
+### 11. Accediendo a un proceso en ejecución con "docker attach"
+
+Enlaza la terminal del usuario al proceso que corre en un contenedor:
+
+    docker attach <id/nombre>
+
+Ejemplo:
+
+    docker run -d --name=muchotexto busybox sh -c "while true; do $(echo date); sleep 1; done"
+    docker attach muchotexto
+
+### 12. Obteniendo información de los logs con "docker log"
+
+Muestra la salida generada por un contenedor:
+
+    docker logs [opciones] <id/nombre>
+
+Ejemplo:
+
+    docker logs -f --until=2s muchotexto
+
+### 13. Renombrando contenedores con "docker rename"
+
+Cambia el nombre de un contenedor:
+
+    docker rename contenedor1 contenedor2
+
+### 14. Principales parámetros del comando "docker run"
+
+Formato general:
+
+    docker run [parámetros] imagen [comando] [argumentos]
+
+#### 14.1. Ejemplo 1: lanzando Ubuntu y accediendo a una terminal
+
+    docker run -it --name=nuestroUbuntu1 ubuntu /bin/bash
+
+- -i: modo interactivo.
+- -t: asigna pseudoterminal.
+- --name: asigna nombre.
+Al salir con exit, el contenedor se detiene.
+
+#### 14.2. Ejemplo 1 EXTRA: accediendo a terminal desde el contenedor parado
+
+    docker start -ai <id/nombre>
+
+- -a: enlaza la salida estándar.
+- -i: modo interactivo.
+
+#### 14.3. Ejemplo 2: ejecutando una versión de una imagen y autoeliminando el contenedor
+
+    docker run -it --rm ubuntu:14.04 /bin/bash
+
+- --rm: elimina el contenedor al detenerse.
+
+#### 14.4. Ejemplo 3: lanzando un servidor web en background y asociando sus puertos
+
+    docker run -d -p 1200:80 nginx
+
+- -d: ejecuta en segundo plano.
+- -p 1200:80: mapea puerto 1200 del host al 80 del contenedor.
+Los puertos solo se definen al crear el contenedor.
+
+#### 14.5. Ejemplo 3 EXTRA: cambiando el “index.html” y consultando logs
+
+Modificar index.html en /usr/share/nginx/html.
+Copiar o editar desde host con docker cp o docker exec.
+Ver logs:
+
+docker logs -n 10 NOMBRE_CONTENEDOR
+
+#### 14.6 Ejemplo 4: estableciendo variables de entorno
+
+    docker run -it -e MENSAJE=HOLA ubuntu bash
+    echo $MENSAJE
+
+-e: define variables de entorno.
+
+
+### 15. Bibliografia
+
+- Docker Docs: https://docs.docker.com/
+
+## UD 04. Gestión de imágenes en Docker
+
+### 1. Introducción
+
+Se explica cómo gestionar imágenes de contenedores: listarlas, eliminarlas, consultar su historial y crearlas manualmente o mediante docker build con Dockerfile.
+
+### 2. Listando imágenes locales y para su descarga
+
+#### 2.1. Listando imágenes locales
+
+- docker images: lista las imágenes almacenadas.
+- docker images [REPOSITORIO:TAG]: filtra imágenes.
+- -f permite filtros avanzados (ej. docker images -f=reference="u*:*04").
+
+#### 2.2. Listando imágenes para su descarga
+
+    docker search [nombre] 
+
+muestra imágenes disponibles en Docker Hub.
+
+### 3. Descargando y eliminando imágenes (y contenedores) locales
+
+#### 3.1. Descargando imágenes con “docker pull”
+
+- "docker pull nombre:tag" descarga una imagen desde el registro.
+
+#### 3.2. Observar el historial de una imagen descargada
+
+- "docker history imagen" muestra capas y versiones de una imagen.
+
+#### 3.3. Eliminando imágenes con “docker rmi”
+
+- "docker rmi imagen:tag" elimina imágenes locales.
+- "docker rmi $(docker images -q)" elimina todas las que no estén en uso.
+
+#### 3.4. Eliminando contenedores con “docker rm”
+
+- "docker rm ID/NOMBRE" elimina contenedores detenidos.
+- "docker stop $(docker ps -a -q)" seguido de "docker rm $(docker ps -a -q)" los elimina todos.
+
+#### 3.5. Eliminando todas las imágenes y contenedores con “docker system prune -a”
+
+- "docker system prune -a" elimina imágenes y contenedores parados de una sola vez.
+
+### 4. Creando nuestras propias imágenes a partir de un contenedor existente
+
+- docker commit -a "autor" -m "comentario" ID_CONTENEDOR usuario/imagen:version convierte un contenedor en imagen.
+- docker tag permite añadir etiquetas.
+- docker rmi elimina etiquetas no necesarias.
+
+### 5. Exportando/importando imágenes locales a/desde ficheros
+
+- docker save -o archivo.tar imagen guarda una imagen en un fichero.
+- docker load -i archivo.tar la restaura en otro sistema.
+
+### 6. Subiendo nuestras propias imágenes a un repositorio (Docker Hub)
