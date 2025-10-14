@@ -415,3 +415,86 @@ Permite almacenar imágenes públicas o privadas y buscar imágenes listas para 
 Docker lo usa como registro predeterminado, aunque se pueden usar otros o incluso montar un registro privado. Más información: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-18-04-es
 
 ### 5. Creando y arrancando contenedores con "Docker run" 
+
+#### 5.1. ¿Qué hace el comando “docker run”?
+
+Este comando crea un contenedor a partir de una imagen y lo arranca.
+Un error común es pensar que solo inicia contenedores; en realidad, cada ejecución crea uno nuevo.
+Documentación: https://docs.docker.com/reference/cli/docker/container/run/
+
+#### 5.2. Creando contenedores sin arrancarlos
+
+Si se desea crear un contenedor sin iniciarlo, se usa:
+
+    docker create
+
+#### 5.3. Repasando caso práctico “Hello World”
+
+En anteriores unidades propusimos un sencillo caso práctico para comprobar que funcionaba
+Docker usando el siguiente comando:
+
+    docker run hello-world
+
+##### 5.3.1. Repaso parte 1: obteniendo la imagen
+
+Si la imagen no está localmente, Docker la descarga de Docker Hub.
+El comando por defecto busca la versión latest si no se especifica una.
+Por ejemplo: hello-world:latest descarga la última versión disponible.
+
+##### 5.3.2. Repaso parte 2: el contenedor se crea y ejecuta un comando
+
+Una vez descargada, Docker crea el contenedor, ejecuta el comando interno (hello) y muestra el mensaje de prueba.
+El código del programa se puede consultar en: https://github.com/docker-library/hello-world/blob/master/hello.c
+
+### 6. Listar contenedores disponibles en el sistema con "Docker ps"
+
+Permite ver contenedores en ejecución:
+
+    docker ps
+
+Para listar todos los contenedores (incluso los detenidos):
+
+    docker ps -a
+
+Muestra información como: ID, imagen usada, comando de arranque, estado, puertos y nombre asignado.
+
+### 7. Parando y arrancando contenedores existentes con "docker start/stop/restart"
+
+Arrancar:
+
+    docker start <id/nombre>
+
+Detener:
+
+    docker stop <id/nombre>
+
+Reiniciar:
+
+    docker restart <id/nombre>
+
+La descripción completa de estos comandos la podéis encontrar en:
+- https://docs.docker.com/engine/reference/commandline/start/
+- https://docs.docker.com/engine/reference/commandline/stop/
+- https://docs.docker.com/engine/reference/commandline/restart/
+
+### 8. Inspeccionando contenedores con "docker inspect"
+
+Muestra información detallada de un contenedor (ID completo, red, almacenamiento, etc.):
+
+    docker inspect <id/nombre>
+
+### 9. Ejecutar comandos dentro de un contenedor (docker exec)
+
+Permite ejecutar comandos dentro de un contenedor en ejecución:
+
+    docker exec [opciones] <id/nombre> <comando>
+
+Ejemplos: 
+
+    docker exec -d contenedor touch /tmp/prueba
+    docker exec -it contenedor bash
+    docker exec -it -e VAR1=1 contenedor bash
+
+El parámetro -it enlaza la entrada y salida de la terminal.
+
+### 10. Copiando ficheros entre anfitrión y contenedores con  "docker cp"
