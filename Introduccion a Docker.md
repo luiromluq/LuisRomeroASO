@@ -198,10 +198,220 @@ paquetes y tras ello, instalar los paquetes necesarios
     sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
 Una vez realizado este paso, descargamos la clave GPG del repositorio de Docker CE y la
-incluiremos. Podemos hacer todo con las siguientes línea:s
+incluiremos. Podemos hacer todo con las siguientes líneas
+
+    sudo mkdir -m 0755 -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o
+    /etc/apt/keyrings/docker.gpg
+
+Ahora, solo nos queda añadir el repositorio de Docker CE como fuente para instalación de
+paquetes.
+
+    lsb_release -cs
+
+Este comando nos dirá qué distribución tenemos. Por ejemplo, si tenemos “Ubuntu Kinetic 22.10
+(LTS)”, este comando imprimirá por pantalla “Kinetic”
+
+En algunas versiones derivadas de Ubuntu, como Linux Mint, aunque la distribución esté basada en
+Ubuntu Kinetic, no devolverá el texto “Kinetic”, sino otro diferente. Si estáis en este caso, deberéis
+introducir a mano la versión de Ubuntu en que se basa vuestra distribución (sustituyendo el
+comando de “lsb_release -cs” de la siguiente línea)
+
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg]
+    https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+O en el caso que tengáis una distribución basada en Ubuntu con el problema comentado
+anteriormente, sustituir “$(lsb_release -cs)” a mano por el nombre, de una forma similar a:
+
+    echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg]
+    https://download.docker.com/linux/ubuntu \kinetic stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 ##### 2.2.3. Paso 3: Instalando Docker Engine CE
 
+Actualizar el índice de paquetes e instalar:
 
+    sudo apt-get update
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+Comprobar la instalación:
+
+    sudo docker version
+
+    
 #### 2.3. Post instalación
+
+La documentación oficial sugiere varios pasos de configuración posterior.
+Aquí se explican dos: permitir usar Docker sin privilegios y controlar el arranque automático.
+
+##### 2.3.1.
+
+Docker usa sockets Unix, que requieren permisos de root.
+Para permitir que usuarios normales lo usen:
+
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+
+Tras esto, el usuario debe cerrar sesión y volver a entrar.
+Si aparece un error de permisos en ~/.docker/config.json, puede resolverse con:
+
+    sudo rm -rf ~/.docker/
+    sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+    sudo chmod g+rwx "$HOME/.docker" -R
+
+##### 2.3.2. Activar/desactivar arranque al inicio
+
+Activar al inicio:
+
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
+
+Desactivar:
+
+    sudo systemctl disable docker.service
+    sudo systemctl disable containerd.service
+
+Iniciar, detener o reiniciar manualmente:
+
+    sudo systemctl start/stop/restart docker.service
+    sudo systemctl start/stop/restart containerd.service
+
+#### 2.4. Desinstalando Docker en Ubuntu
+
+Desinstalar el motor de Docker:
+
+    sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+Para eliminar imágenes y contenedores:
+
+    sudo docker system prune -a
+
+O eliminar manualmente:
+
+    sudo rm -rf /var/lib/docker
+
+
+### 3. Instalación de Docker en sistemas Windows
+
+Existen guías diferentes para:
+- Windows 10 Pro / Server: requiere Hyper-V.
+- Windows 10 Home: requiere WSL2.
+
+#### 3.1. Pasos previos Windows 10 Pro y Windows Server: activando Hyper-v
+
+Debe habilitarse Hyper-V mediante los siguientes enlaces de Microsoft, donde se explica como se hace:
+
+Guía Windows 10 Pro: https://docs.microsoft.com/es-es/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
+
+Guía Windows Server: https://learn.microsoft.com/es-es/windows-server/virtualization/hyper-v/get-started/Install-Hyper-V?tabs=powershell&pivots=windows-server
+
+#### 3.2. Pasos previos Windows 10 Home: Instalando WSL2
+
+Pasos resumidos:
+
+1.Habilitar WSL:
+
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+2.Actualizar Windows (mínimo versión 1903, build 18362).
+3.Activar “Virtual Machine Platform”:
+
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+4.Instalar el kernel de Linux para WSL2:
+5.Establecer WSL2 como versión predeterminada:
+
+    wsl --set-default-version 2
+
+6.Instalar una distribución Linux (ej. Ubuntu) desde Microsoft Store y configurarla al iniciarla por primera vez.
+
+#### 3.3. Instalación de Docker Desktop
+
+Descargar desde: https://docs.docker.com/desktop/setup/install/windows-install/
+Seguir los pasos del instalador.
+Verificar instalación:
+
+    docker version
+
+#### 3.4. Resolviendo problemas en la instalación de Docker Desktop
+
+Docker Desktop puede presentar errores o fallos al actualizar.
+Para solucionarlo:
+
+- Desinstalar Docker Desktop.
+- Eliminar la carpeta C:\Users\<usuario>\.docker
+- Borrar variables de entorno relacionadas con Docker (DOCKER_TLS_VERIFY, DOCKER_CERT_PATH, DOCKER_HOST).
+- Reiniciar el sistema.
+- Reinstalar Docker Desktop.
+
+### 4. Instalación de Docker en sistemas MacOS
+
+Para instalar Docker Desktop en MacOS:
+- Descargar el paquete .dmg desde Docker Hub: https://docs.docker.com/desktop/setup/install/mac-install/
+
+### 5. Playgrounds de docker
+
+Existen entornos online que permiten practicar Docker sin instalarlo, el más conocido es Play with Docker: https://labs.play-with-docker.com/
+Permite hacer pruebas o enseñar Docker de forma segura desde el navegador.
+
+### 6. Conclusión
+
+Se han descrito los procedimientos para instalar Docker en Linux, Windows y MacOS, así como los pasos de post-instalación y verificación.
+Se recomienda, siempre que sea posible, usar Docker en Linux para evitar errores y obtener mejor rendimiento.
+
+### 7. Bibliografía
+
+- Docker Docs https://docs.docker.com/
+
+## UD 03. Principales acciones con Docker
+
+### 1. Introducción
+
+Esta unidad explica las acciones básicas de Docker, como crear, gestionar e inspeccionar contenedores.
+Al finalizar, se espera tener un manejo práctico y fluido de Docker desde la línea de comandos.
+
+### 2. ¿Gestionaremos Docker mediante interfaz gráfica?
+
+Aunque existen herramientas gráficas para gestionar Docker, en este curso se trabajará exclusivamente por línea de comandos.
+Esto se debe a que el uso de GUI puede ocultar conceptos fundamentales del funcionamiento interno de Docker.
+
+### 3. Imágenes y contenedores
+
+#### 3.1. ¿Qué es una imagen y un contenedor?
+
+Imagen:
+- Es una plantilla de solo lectura usada para crear contenedores.
+- Contiene un sistema de archivos predefinido y parámetros configurables (comandos, variables, etc.).
+- Las imágenes pueden basarse en otras imágenes, creando capas sucesivas.
+- Crear una nueva imagen equivale a añadir una capa sobre otra existente.
+
+Contenedor:
+- Es una instancia ejecutable de una imagen.
+- Puede arrancarse, detenerse y ejecutarse múltiples veces.
+- Tiene un ID único de 64 caracteres (normalmente se usan los 12 primeros).
+- Los contenedores pueden identificarse por su ID o nombre, siempre que sea único.
+
+Símil: La imagen sería como un DVD de instalación de Linux, y el contenedor sería el sistema operativo instalado a partir de él.
+
+#### 3.2. ¿Dónde se almacenan imágenes, contenedores y datos?
+
+El almacenamiento varía según el sistema operativo y el driver usado.
+Con el comando:
+
+    docker info
+
+podemos ver el driver de almacenamiento y el directorio de Docker.
+Por ejemplo, con el driver overlay2:
+- Las imágenes se guardan en /var/lib/docker/overlay2.
+- La configuración de contenedores está en /var/lib/docker/containers.
+- Los volúmenes se usan para datos persistentes (se verán más adelante).
+
+### 4. Registro: Docker Hub
+
+Docker Hub es la plataforma de registro oficial de imágenes Docker.
+Permite almacenar imágenes públicas o privadas y buscar imágenes listas para usar: https://hub.docker.com/search?q=&type=image
+
+Docker lo usa como registro predeterminado, aunque se pueden usar otros o incluso montar un registro privado. Más información: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-18-04-es
+
+### 5. Creando y arrancando contenedores con "Docker run" 
