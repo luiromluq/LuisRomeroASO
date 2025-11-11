@@ -2,6 +2,18 @@
 
 ## a: Utilice el comando ps junto con opciones de formato (ps -eo state,pid,cmd) y el comando grep para identificar y contar cuántos procesos del sistema se encuentran en los estados 'dormido' (S) o 'zombie' (Z).
 
+Para identificar estos procesos:
+
+    ps -eo state,pid,cmd | grep -E "^[SZ]"
+
+<img width="951" height="925" alt="image" src="https://github.com/user-attachments/assets/632cf266-a6c0-4560-8c48-2839b7a0d083" />
+
+Para contarlos:
+
+    ps -eo state | grep -E "^[SZ]" | wc -l
+
+(Da como resultado 167)
+
 ## b: Examine el sistema de archivos /proc y documente la tabla de interrupciones leyendo el archivo /proc/interrupts. Describa qué tipo de dispositivo está asociado con la interrupción ID 1 (típicamente el teclado/mouse).
 
 ## c: Inicie un comando en segundo plano (e.g., sleep 600 &) para crear un "trabajo". Luego, use el comando jobs para listar el trabajo y el comando ps -L para identificar los hilos (LWP) de un proceso multiproceso del sistema, diferenciándolos del PID principal.
