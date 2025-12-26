@@ -66,6 +66,7 @@ Si no lo hiciste en el paso anterior, puedes abrir VirtualBox desde el menú de 
 7- Listo para usar
 
 Ahora ya puedes empezar a usar VirtualBox para crear y administrar máquinas virtuales en tu PC con Windows. Para crear una nueva máquina virtual, simplemente haz clic en el botón "Nuevo" y sigue el asistente para configurarla.
+
 #### Crear una máquina virtual de controlador de dominio de Windows Server
 
 En esta tarea, implementará y configurará un controlador de dominio de Windows Server para el laboratorio donde realizará tareas relacionadas con la credencial de habilidad aplicada. Para ello, asegúrese de haber descargado el archivo ISO de Windows Server 20XX Evaluation Edition.
@@ -224,6 +225,8 @@ Servidor DNS alternativo: 8.8.8.8
 
 - En la página Configuración de implementación, seleccione Agregar un nuevo bosque y configure el nombre de dominio raíz como tailwindtraders.internal. Haga clic en Siguiente.
 
+<img width="957" height="1076" alt="image" src="https://github.com/user-attachments/assets/7f6877e6-9410-41b6-83aa-293eb15ebea5" />
+
 - En la página de opciones del controlador de dominio, acepte la configuración predeterminada y proporcione la contraseña del modo de restauración de servicios de directorio (DSRM). Para ello, introduzca la contraseña dos veces. Haga clic en Siguiente.
   
 - En la página Opciones de DNS, haga clic en Siguiente.
@@ -237,7 +240,72 @@ Servidor DNS alternativo: 8.8.8.8
 - En la página de verificación de prerrequisitos, haga clic en Instalar. La máquina virtual se reiniciará.
   
 - Cuando la máquina virtual se reinicie, inicie sesión como tailwindtraders\administrator con la contraseña que configuró para la cuenta de administrador predeterminada.
+
+#### Crear un servidor miembro del dominio de Windows Server
+
+En esta tarea, se implementa y configura un servidor miembro del dominio de Windows Server 2022 para el laboratorio donde se realizan tareas relacionadas con la credencial de habilidad aplicada. Esta tarea también utiliza el archivo ISO de la edición de evaluación.
+
+- En el Administrador de Hyper-V, en el menú Acciones, seleccione Nuevo y luego seleccione Máquina virtual.
   
+- En la página Antes de comenzar del Asistente para nueva máquina virtual, haga clic en Siguiente.
+- En la página Especificar nombre y ubicación del Asistente para nueva máquina virtual, ingrese el nombre TAILWIND-MBR1 y haga clic en Siguiente.
+- En la página Especificar generación, seleccione Generación 2 y haga clic en Siguiente.
+- En la página Asignar memoria, configure la memoria de inicio en 4096 MB y deje seleccionada la opción " Usar memoria dinámica para esta máquina virtual". Haga clic en Siguiente.
+- En la página Configurar red, configure la Conexión en el menú desplegable en NATSwitch y haga clic en Siguiente .
+- En la página Conectar disco duro virtual, acepte los valores predeterminados y haga clic en Siguiente .
+- En la página Opciones de instalación, seleccione la opción Instalar un sistema operativo desde un archivo de imagen de arranque y, a continuación, haga clic en Explorar para seleccionar el archivo ISO de Windows Server 2022 Evaluation Edition (llamado SERVER_EVAL_x64FRE_en-us.iso) que descargó en la carpeta C:\ISOs. Haga clic en Siguiente .
+- En la página Resumen, haga clic en Finalizar .
+- En el Administrador de Hyper-V, haga clic con el botón derecho en TAILWIND-MBR1 y seleccione Configuración .
+- En la página Configuración de TAILWIND-MBR1, en Administración, seleccione Puntos de control , asegúrese de que la opción Usar puntos de control automáticos no esté seleccionada y haga clic en Aceptar .
+- Haga doble clic en TAILWIND-MBR1. Se abrirá la ventana Conexión de máquina virtual. Haga clic en Inicio . Cuando aparezca el mensaje "Presione cualquier tecla para arrancar desde el CD o DVD", utilice el ratón para seleccionar dentro de la ventana de la máquina virtual y pulse la barra espaciadora. Esto configura la máquina virtual para que arranque desde el archivo ISO adjunto.
+- En la página de configuración del sistema operativo del servidor de Microsoft, acepte los valores predeterminados y haga clic en Siguiente .
+- En la página Instalar ahora, haga clic en Instalar ahora .
+- En la página de configuración del sistema operativo de Microsoft Server, seleccione Windows Server 2022 Standard Evaluation (Desktop Experience) y haga clic en Siguiente .
+- En la página Avisos aplicables y términos de licencia, revise la licencia y marque la casilla "Acepto" . Haga clic en Siguiente .
+- En la página ¿Qué tipo de instalación desea?, seleccione Personalizada .
+- En la página "¿Dónde desea instalar el sistema operativo?", seleccione la Unidad 0 y haga clic en Siguiente . El sistema operativo se instalará. Esto tarda varios minutos, dependiendo de la velocidad del equipo. La máquina virtual se reiniciará.
+- En la página "Personalizar configuración", se le solicitará una contraseña para la cuenta de administrador integrada. Ingrese la contraseña: Pa55w.rdPa55w.rd dos veces. Esta contraseña es de prueba y no debe usarse en sistemas de producción. También puede elegir su propia contraseña aquí. Después de ingresar la contraseña de administrador dos veces, seleccione " Finalizar ". No se conectará a la máquina virtual en ejecución.
+- En la pantalla de bloqueo de la máquina virtual, ingrese la contraseña de administrador Pa55w.rdPa55w.rd para iniciar sesión.
+- Después de iniciar sesión, haga clic derecho en el ícono de red, representado por un globo terráqueo en la barra de tareas, y seleccione Abrir configuración de red e Internet .
+- En la página Estado de la red, seleccione Cambiar opciones del adaptador .
+- En la página Conexiones de red, haga clic con el botón derecho en Ethernet y seleccione Propiedades .
+- En la página Propiedades de Ethernet, seleccione el elemento Protocolo de Internet versión 4 (TCP/IPv4) y haga clic en Propiedades .
+- En la pestaña General de la página Propiedades del Protocolo de Internet versión 4 (TCP/IPv4), establezca la configuración de la dirección IP de la siguiente manera y haga clic en Aceptar :
+
+Utilice la siguiente dirección IP:
+
+Dirección IP: 10.10.10.20
+Máscara de subred: 255.255.255.0
+Puerta de enlace predeterminada: 10.10.10.1
+
+Utilice las siguientes direcciones de servidor DNS:
+
+Servidor DNS preferido: 10.10.10.10
+Servidor DNS alternativo: 8.8.8.8
+
+- Haga clic en Cerrar . Cuando se le pregunte si desea permitir que el equipo sea detectable, seleccione Sí .
+- En el menú Inicio, abra el Administrador del servidor, seleccione Servidor local y, a continuación, Nombre del equipo. Esto abrirá el cuadro de diálogo Propiedades del sistema. En la página Nombre del equipo del cuadro de diálogo Propiedades del sistema, seleccione Cambiar .
+- En el cuadro de diálogo Cambios de nombre de computadora/dominio, configure el nombre de la computadora en TAILWIND-MBR1 y luego haga clic en Aceptar .
+- En el cuadro de diálogo que le informa que necesita reiniciar el equipo, haga clic en Aceptar .
+- En el cuadro de diálogo Propiedades del sistema, haga clic en Cerrar .
+- En el cuadro de diálogo "Debe reiniciar el equipo para aplicar estos cambios", haga clic en " Reiniciar ahora" . El equipo se reiniciará.
+- Cuando la computadora se haya reiniciado, inicie sesión como Administrador con la contraseña que configuró durante la instalación.
+- En la consola del Administrador del servidor, seleccione la sección Servidor local. En esta sección, seleccione TAILWIND-MBR1 junto a Nombre del equipo. Esto abrirá el cuadro de diálogo Propiedades del sistema.
+- En el cuadro de diálogo Propiedades del sistema, haga clic en Cambiar.
+
+- En el cuadro de diálogo Cambios de nombre de computadora/dominio, seleccione Dominio en Miembro de , ingrese el nombre de dominio TAILWINDTRADERS y haga clic en Aceptar.
+
+- En el cuadro de diálogo Cambios de nombre de equipo/dominio, ingrese el siguiente nombre de usuario y contraseña y haga clic en Aceptar:
+
+Nombre de usuario: TAILWINDTRADERS\Administrador
+Contraseña: La que hayas puesto
+
+En unos momentos, aparecerá el cuadro de diálogo "Bienvenido al dominio Tailwintraders". Haga clic en "Aceptar".
+
+- En el cuadro de diálogo Propiedades del sistema, haga clic en Cerrar.
+
+- En el cuadro de diálogo que le solicita que reinicie la computadora, haga clic en Reiniciar ahora.
+
 ## Ejercicio: Configurar operaciones del controlador de dominio
 ## Ejercicio: Configurar operaciones de administración de usuarios
 ## Ejercicio: Administrar directivas de contraseña
