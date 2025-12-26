@@ -8,6 +8,10 @@ Este módulo trata los pasos principales para implementar, configurar y mantener
 
 Se trata de un proyecto guiado, donde se completa una serie de tareas.
 
+Necesitaremos:
+- Ordenador Windows/Linux/MAC
+- Dos máquinas virtuales Windows Server.
+
 ### Configuración
 
 La sección Configuración consta de tres tareas principales:
@@ -241,35 +245,56 @@ Servidor DNS alternativo: 8.8.8.8
   
 - Cuando la máquina virtual se reinicie, inicie sesión como tailwindtraders\administrator con la contraseña que configuró para la cuenta de administrador predeterminada.
 
+<img width="958" height="1079" alt="image" src="https://github.com/user-attachments/assets/941d6730-f6d8-4735-8a39-20df117034f2" />
+
 #### Crear un servidor miembro del dominio de Windows Server
 
-En esta tarea, se implementa y configura un servidor miembro del dominio de Windows Server 2022 para el laboratorio donde se realizan tareas relacionadas con la credencial de habilidad aplicada. Esta tarea también utiliza el archivo ISO de la edición de evaluación.
+En esta tarea, se implementa y configura un servidor miembro del dominio de Windows Server 20XX para el laboratorio donde se realizan tareas relacionadas con la credencial de habilidad aplicada. Esta tarea también utiliza el archivo ISO de la edición de evaluación.
 
-- En el Administrador de Hyper-V, en el menú Acciones, seleccione Nuevo y luego seleccione Máquina virtual.
+- En VirtualBox, selecciona Nuevo y luego seleccione Máquina virtual.
   
 - En la página Antes de comenzar del Asistente para nueva máquina virtual, haga clic en Siguiente.
-- En la página Especificar nombre y ubicación del Asistente para nueva máquina virtual, ingrese el nombre TAILWIND-MBR1 y haga clic en Siguiente.
-- En la página Especificar generación, seleccione Generación 2 y haga clic en Siguiente.
+  
+- En la página Especificar nombre y ubicación del Asistente para nueva máquina virtual, ingrese el nombre que desee y haga clic en Siguiente.
+
 - En la página Asignar memoria, configure la memoria de inicio en 4096 MB y deje seleccionada la opción " Usar memoria dinámica para esta máquina virtual". Haga clic en Siguiente.
-- En la página Configurar red, configure la Conexión en el menú desplegable en NATSwitch y haga clic en Siguiente .
-- En la página Conectar disco duro virtual, acepte los valores predeterminados y haga clic en Siguiente .
-- En la página Opciones de instalación, seleccione la opción Instalar un sistema operativo desde un archivo de imagen de arranque y, a continuación, haga clic en Explorar para seleccionar el archivo ISO de Windows Server 2022 Evaluation Edition (llamado SERVER_EVAL_x64FRE_en-us.iso) que descargó en la carpeta C:\ISOs. Haga clic en Siguiente .
-- En la página Resumen, haga clic en Finalizar .
-- En el Administrador de Hyper-V, haga clic con el botón derecho en TAILWIND-MBR1 y seleccione Configuración .
-- En la página Configuración de TAILWIND-MBR1, en Administración, seleccione Puntos de control , asegúrese de que la opción Usar puntos de control automáticos no esté seleccionada y haga clic en Aceptar .
-- Haga doble clic en TAILWIND-MBR1. Se abrirá la ventana Conexión de máquina virtual. Haga clic en Inicio . Cuando aparezca el mensaje "Presione cualquier tecla para arrancar desde el CD o DVD", utilice el ratón para seleccionar dentro de la ventana de la máquina virtual y pulse la barra espaciadora. Esto configura la máquina virtual para que arranque desde el archivo ISO adjunto.
-- En la página de configuración del sistema operativo del servidor de Microsoft, acepte los valores predeterminados y haga clic en Siguiente .
-- En la página Instalar ahora, haga clic en Instalar ahora .
-- En la página de configuración del sistema operativo de Microsoft Server, seleccione Windows Server 2022 Standard Evaluation (Desktop Experience) y haga clic en Siguiente .
-- En la página Avisos aplicables y términos de licencia, revise la licencia y marque la casilla "Acepto" . Haga clic en Siguiente .
-- En la página ¿Qué tipo de instalación desea?, seleccione Personalizada .
-- En la página "¿Dónde desea instalar el sistema operativo?", seleccione la Unidad 0 y haga clic en Siguiente . El sistema operativo se instalará. Esto tarda varios minutos, dependiendo de la velocidad del equipo. La máquina virtual se reiniciará.
-- En la página "Personalizar configuración", se le solicitará una contraseña para la cuenta de administrador integrada. Ingrese la contraseña: Pa55w.rdPa55w.rd dos veces. Esta contraseña es de prueba y no debe usarse en sistemas de producción. También puede elegir su propia contraseña aquí. Después de ingresar la contraseña de administrador dos veces, seleccione " Finalizar ". No se conectará a la máquina virtual en ejecución.
-- En la pantalla de bloqueo de la máquina virtual, ingrese la contraseña de administrador Pa55w.rdPa55w.rd para iniciar sesión.
+
+- En la página Configurar red, configure la Conexión en el menú desplegable en NAT y haga clic en Siguiente.
+  
+- En la página Conectar disco duro virtual, acepte los valores predeterminados y haga clic en Siguiente.
+  
+- En la página Opciones de instalación, seleccione la opción Instalar un sistema operativo desde un archivo de imagen de arranque y, a continuación, haga clic en Explorar para seleccionar el archivo ISO de Windows Server 20XX Evaluation Edition. Haga clic en Siguiente.
+
+- En la página Resumen, haga clic en Finalizar.
+
+- Haz clic con el botón derecho en el servidor miembro y seleccione Configuración.
+
+- Haga doble clic en el servidor miembro. Se abrirá la ventana Conexión de máquina virtual. Haga clic en Inicio . Cuando aparezca el mensaje "Presione cualquier tecla para arrancar desde el CD o DVD", utilice el ratón para seleccionar dentro de la ventana de la máquina virtual y pulse la barra espaciadora. Esto configura la máquina virtual para que arranque desde el archivo ISO adjunto.
+
+- En la página de configuración del sistema operativo del servidor de Microsoft, acepte los valores predeterminados y haga clic en Siguiente.
+
+- En la página Instalar ahora, haga clic en Instalar ahora.
+
+- En la página de configuración del sistema operativo de Microsoft Server, seleccione Windows Server 20XX Standard Evaluation (Experiencia de Escritorio) y haga clic en Siguiente.
+
+- En la página Avisos aplicables y términos de licencia, revise la licencia y marque la casilla "Acepto". Haga clic en Siguiente.
+
+- En la página ¿Qué tipo de instalación desea?, seleccione Personalizada.
+
+- En la página "¿Dónde desea instalar el sistema operativo?", seleccione la Unidad 0 y haga clic en Siguiente. La máquina virtual se reiniciará.
+
+- En la página "Personalizar configuración", se le solicitará una contraseña para la cuenta de administrador integrada. Ingresa la contraseñaque desees dos veces. Esta contraseña es de prueba y no debe usarse en sistemas de producción. También puede elegir su propia contraseña aquí. Después de ingresar la contraseña de administrador dos veces, seleccione " Finalizar ". No se conectará a la máquina virtual en ejecución.
+
+- En la pantalla de bloqueo de la máquina virtual, ingrese la contraseña de administrador para iniciar sesión.
+
 - Después de iniciar sesión, haga clic derecho en el ícono de red, representado por un globo terráqueo en la barra de tareas, y seleccione Abrir configuración de red e Internet .
-- En la página Estado de la red, seleccione Cambiar opciones del adaptador .
-- En la página Conexiones de red, haga clic con el botón derecho en Ethernet y seleccione Propiedades .
+
+- En la página Estado de la red, seleccione Cambiar opciones del adaptador.
+
+- En la página Conexiones de red, haga clic con el botón derecho en Ethernet y seleccione Propiedades.
+
 - En la página Propiedades de Ethernet, seleccione el elemento Protocolo de Internet versión 4 (TCP/IPv4) y haga clic en Propiedades .
+
 - En la pestaña General de la página Propiedades del Protocolo de Internet versión 4 (TCP/IPv4), establezca la configuración de la dirección IP de la siguiente manera y haga clic en Aceptar :
 
 Utilice la siguiente dirección IP:
@@ -282,6 +307,8 @@ Utilice las siguientes direcciones de servidor DNS:
 
 Servidor DNS preferido: 10.10.10.10
 Servidor DNS alternativo: 8.8.8.8
+
+<img width="421" height="436" alt="image" src="https://github.com/user-attachments/assets/f87e3652-3f9d-43fe-842d-d1632f96cafe" />
 
 - Haga clic en Cerrar . Cuando se le pregunte si desea permitir que el equipo sea detectable, seleccione Sí .
 - En el menú Inicio, abra el Administrador del servidor, seleccione Servidor local y, a continuación, Nombre del equipo. Esto abrirá el cuadro de diálogo Propiedades del sistema. En la página Nombre del equipo del cuadro de diálogo Propiedades del sistema, seleccione Cambiar .
