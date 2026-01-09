@@ -158,6 +158,8 @@ En esta tarea, implementará y configurará un controlador de dominio de Windows
 
 - En la página de configuración del sistema operativo de Microsoft Server, seleccione Windows Server 20XX Standard Evaluation (Experiencia de Escritorio) y haga clic en Siguiente.
 
+<img width="1029" height="852" alt="image" src="https://github.com/user-attachments/assets/e1ce9c25-5f15-4ed5-8a05-c2eeaa5fc69d" />
+
 - En la página Avisos aplicables y términos de licencia, revise la licencia y marque la casilla "Acepto".  Haga clic en Siguiente.
 
 - En la página ¿Qué tipo de instalación desea?, seleccione Personalizada.
