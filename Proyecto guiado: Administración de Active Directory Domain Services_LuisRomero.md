@@ -85,7 +85,7 @@ En esta tarea, implementará y configurará un controlador de dominio de Windows
 
 - Configurar nombre y tipo de sistema operativo:
 
-- Nombre: Escribe un nombre para tu máquina virtual, por ejemplo: "Windows Server 2019".
+- Nombre: Escribe un nombre para tu máquina virtual (TAILWIND-DC1)
 
 - Tipo: Asegúrate de que esté seleccionado "Microsoft Windows".
 
@@ -196,6 +196,8 @@ Servidor DNS alternativo: 8.8.8.8
 - En el menú Inicio, abra el Administrador del servidor, seleccione Servidor local y, a continuación, Nombre del equipo. Esto abrirá el cuadro de diálogo Propiedades del sistema. En la página Nombre del equipo del cuadro de diálogo Propiedades del sistema, seleccione Cambiar .
 
 - En el cuadro de diálogo Cambios de nombre de computadora/dominio, configure el nombre de la computadora en TAILWIND-DC1 y luego haga clic en Aceptar.
+
+<img width="326" height="232" alt="image" src="https://github.com/user-attachments/assets/66cdb970-93ec-4b29-a579-66fa8d2bc709" />
 
 - En el cuadro de diálogo que le informa que necesita reiniciar el equipo, haga clic en Aceptar.
 
