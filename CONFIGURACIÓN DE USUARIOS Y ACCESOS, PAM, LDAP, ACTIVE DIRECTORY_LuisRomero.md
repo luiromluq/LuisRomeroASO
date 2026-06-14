@@ -1,4 +1,4 @@
-# PRÁCTICA: CONFIGURACIÓN DE USUARIOS Y ACCESOS PAM / LDAP Linux / Active Directory Windows
+# CONFIGURACIÓN DE USUARIOS Y ACCESOS PAM / LDAP Linux / Active Directory Windows
 
 # BLOQUE 1 — PAM (PLUGGABLE AUTHENTICATION MODULES)
 
@@ -22,11 +22,11 @@ En esta práctica se configuran los siguientes módulos:
 
 Comandos ejecutados:
 
-ls /etc/pam.d/
+    ls /etc/pam.d/
 
-cat /etc/pam.d/common-auth
+    cat /etc/pam.d/common-auth
 
-cat /etc/pam.d/common-password
+    cat /etc/pam.d/common-password
 
 El directorio /etc/pam.d/ contiene un fichero por cada servicio. En common-auth se observan pam_unix.so (autenticación local) y pam_sss.so (preparado para SSSD/LDAP). En common-password aparece pam_pwquality.so con retry=3.
 
@@ -37,23 +37,23 @@ El directorio /etc/pam.d/ contiene un fichero por cada servicio. En common-auth 
 Se crean dos grupos departamentales y tres usuarios de prueba con distintos niveles de acceso.
 Creación de grupos:
 
-sudo groupadd it
+    sudo groupadd it
 
-sudo groupadd rrhh
+    sudo groupadd rrhh
 
 Creación de usuarios:
 
-sudo useradd -m -s /bin/bash -G it alumno1
+    sudo useradd -m -s /bin/bash -G it alumno1
 
-sudo useradd -m -s /bin/bash -G rrhh alumno2
+    sudo useradd -m -s /bin/bash -G rrhh alumno2
 
-sudo useradd -m -s /bin/bash alumno3
+    sudo useradd -m -s /bin/bash alumno3
 
 Verificación:
 
-cat /etc/passwd | grep alumno
+    cat /etc/passwd | grep alumno
 
-id alumno1 && id alumno2 && id alumno3
+    id alumno1 && id alumno2 && id alumno3
 
 <img width="858" height="1013" alt="captura 18" src="https://github.com/user-attachments/assets/31ac4b9d-65cb-4ace-a5a6-68f5d7eb08fd" />
 
@@ -64,17 +64,17 @@ id alumno1 && id alumno2 && id alumno3
 Se instala y configura pam_pwquality para exigir contraseñas robustas con múltiples tipos de caracteres.
 Instalación:
 
-sudo apt install libpam-pwquality -y
+    sudo apt install libpam-pwquality -y
 
 Copias de seguridad:
 
-sudo cp /etc/pam.d/common-password /etc/pam.d/common-password.bak
+    sudo cp /etc/pam.d/common-password /etc/pam.d/common-password.bak
 
-sudo cp /etc/security/pwquality.conf /etc/security/pwquality.conf.bak
+    sudo cp /etc/security/pwquality.conf /etc/security/pwquality.conf.bak
 
 Configuración de /etc/security/pwquality.conf:
 
-sudo nano /etc/security/pwquality.conf
+    sudo nano /etc/security/pwquality.conf
 
 Parámetros aplicados:
 
@@ -108,11 +108,11 @@ Se configura faillock para bloquear automáticamente una cuenta tras 3 intentos 
 
 Copia de seguridad:
 
-sudo cp /etc/pam.d/common-auth /etc/pam.d/common-auth.bak
+    sudo cp /etc/pam.d/common-auth /etc/pam.d/common-auth.bak
 
 Configuración de /etc/security/faillock.conf:
 
-sudo nano /etc/security/faillock.conf
+    sudo nano /etc/security/faillock.conf
 
 Parámetros configurados:
 
@@ -144,9 +144,9 @@ Se configura pam_access para controlar qué usuarios pueden iniciar sesión, per
 
 Copia de seguridad y edición:
 
-sudo cp /etc/security/access.conf /etc/security/access.conf.bak
+    sudo cp /etc/security/access.conf /etc/security/access.conf.bak
 
-sudo nano /etc/security/access.conf
+    sudo nano /etc/security/access.conf
 
 Reglas añadidas al final del fichero:
 
@@ -164,19 +164,19 @@ Reglas añadidas al final del fichero:
 
 Activación del módulo en common-account y su:
 
-sudo nano /etc/pam.d/common-account  # Añadir: account required pam_access.so
+    sudo nano /etc/pam.d/common-account  # Añadir: account required pam_access.so
 
-sudo nano /etc/pam.d/su              # Añadir: account required pam_access.so
+    sudo nano /etc/pam.d/su              # Añadir: account required pam_access.so
 
 <img width="858" height="1013" alt="captura 26" src="https://github.com/user-attachments/assets/d807c5d7-5efa-4f0a-825d-d26d4776dedf" />
 
 Verificación:
 
-grep 'pam_access' /etc/pam.d/common-account
+    grep 'pam_access' /etc/pam.d/common-account
 
-grep 'pam_access' /etc/pam.d/su
+    grep 'pam_access' /etc/pam.d/su
 
-tail -6 /etc/security/access.conf
+    tail -6 /etc/security/access.conf
 
 <img width="858" height="1013" alt="captura 27" src="https://github.com/user-attachments/assets/9a1665f6-f92c-44b1-9bd4-73faeb6cd09a" />
 
@@ -188,7 +188,7 @@ Se configura pam_limits para establecer restricciones de recursos por usuario y 
 
 Edición de /etc/security/limits.conf:
 
-sudo nano /etc/security/limits.conf
+    sudo nano /etc/security/limits.conf
 
 Líneas añadidas al final:
 
@@ -208,11 +208,11 @@ alumno1   hard  nproc    100    # Límite duro 100 procesos
 
 Verificación:
 
-tail -10 /etc/security/limits.conf
+    tail -10 /etc/security/limits.conf
 
-ulimit -a
+    ulimit -a
 
-su - alumno1 -c "ulimit -a"
+    su - alumno1 -c "ulimit -a"
 
 <img width="858" height="1013" alt="captura 30" src="https://github.com/user-attachments/assets/29093393-218d-4fa6-a94a-84c8bb9feece" />
 
@@ -222,9 +222,9 @@ Se revisan los logs de autenticación, el historial de sesiones y el estado de l
 
 Log de autenticación:
 
-sudo tail -20 /var/log/auth.log
+    sudo tail -20 /var/log/auth.log
 
-last
+    last
 
 El auth.log muestra toda la actividad: sesiones abiertas/cerradas de alumno1-3, intentos fallidos y operaciones sudo realizadas durante la práctica.
 
@@ -232,7 +232,7 @@ El auth.log muestra toda la actividad: sesiones abiertas/cerradas de alumno1-3, 
 
 Módulos PAM activos:
 
-sudo pam-auth-update --list
+    sudo pam-auth-update --list
 
 Módulos activos confirmados: Pwquality, Unix authentication, SSS authentication, Register user sessions in systemd, GNOME Keyring Daemon, Inheritable Capabilities Management.
 
@@ -244,15 +244,15 @@ Módulos activos confirmados: Pwquality, Unix authentication, SSS authentication
 
 Se instala el servidor OpenLDAP (slapd) junto con las utilidades de cliente ldap-utils. Durante la instalación se establece la contraseña del administrador LDAP.
 
-sudo apt update
+    sudo apt update
 
-sudo apt install slapd ldap-utils -y
+    sudo apt install slapd ldap-utils -y
 
 Durante la instalación: contraseña de administrador LDAP → Mindverse2025!
 
 Verificación del servicio:
 
-sudo systemctl status slapd
+    sudo systemctl status slapd
 
 <img width="858" height="1013" alt="captura 33" src="https://github.com/user-attachments/assets/fa6726dd-c2c1-49fc-99f0-656f2a92c856" />
 
@@ -262,7 +262,7 @@ sudo systemctl status slapd
 
 Se reconfigura slapd para establecer el dominio mindverse.local y el nombre de la organización MindVerse Solutions.
 
-sudo dpkg-reconfigure slapd
+    sudo dpkg-reconfigure slapd
 
 Respuestas al asistente de configuración:
 
@@ -280,7 +280,7 @@ Respuestas al asistente de configuración:
   
 Verificación de la base de datos LDAP:
 
-sudo slapcat | head -20
+    sudo slapcat | head -20
 
 La salida confirma: dn: dc=mindverse,dc=local, o: MindVerse Solutions, administrador cn=admin,dc=mindverse,dc=local.
 
@@ -292,7 +292,7 @@ Se crea la estructura jerárquica del directorio con dos unidades organizativas:
 
 Fichero estructura.ldif:
 
-nano ~/estructura.ldif
+    nano ~/estructura.ldif
 
 Contenido del fichero:
 
@@ -310,9 +310,9 @@ ou: grupos
 
 Aplicar y verificar:
 
-ldapadd -x -D "cn=admin,dc=mindverse,dc=local" -W -f ~/estructura.ldif
+    ldapadd -x -D "cn=admin,dc=mindverse,dc=local" -W -f ~/estructura.ldif
 
-ldapsearch -x -LLL -b "dc=mindverse,dc=local" "(objectClass=organizationalUnit)"
+    ldapsearch -x -LLL -b "dc=mindverse,dc=local" "(objectClass=organizationalUnit)"
 
 <img width="858" height="1013" alt="captura 37" src="https://github.com/user-attachments/assets/de606866-8f71-4a91-b10a-a8b55432f075" />
 
@@ -321,13 +321,13 @@ ldapsearch -x -LLL -b "dc=mindverse,dc=local" "(objectClass=organizationalUnit)"
 Se generan los usuarios del directorio LDAP con sus atributos POSIX para que puedan autenticarse en el sistema Linux.
 Generar hash de contraseña:
 
-HASH=$(slappasswd -s 'Mindverse2025!')
+    HASH=$(slappasswd -s 'Mindverse2025!')
 
-echo $HASH
+    echo $HASH
 
 Crear fichero usuarios.ldif con el hash:
 
-cat > ~/usuarios.ldif << EOF
+    cat > ~/usuarios.ldif << EOF
 
 dn: uid=alumno1,ou=usuarios,dc=mindverse,dc=local
 
@@ -351,9 +351,9 @@ EOF
 
 Aplicar y verificar:
 
-ldapadd -x -D "cn=admin,dc=mindverse,dc=local" -W -f ~/usuarios.ldif
+    ldapadd -x -D "cn=admin,dc=mindverse,dc=local" -W -f ~/usuarios.ldif
 
-ldapsearch -x -LLL -b "ou=usuarios,dc=mindverse,dc=local"
+    ldapsearch -x -LLL -b "ou=usuarios,dc=mindverse,dc=local"
 
 <img width="858" height="1013" alt="captura 41" src="https://github.com/user-attachments/assets/b72a5395-7bda-4be5-9e2d-6a8141bc2a66" />
 
@@ -363,11 +363,11 @@ SSSD (System Security Services Daemon) actúa como intermediario entre el sistem
 
 Instalación:
 
-sudo apt install sssd sssd-ldap ldap-utils -y
+    sudo apt install sssd sssd-ldap ldap-utils -y
 
 Configuración de /etc/sssd/sssd.conf:
 
-sudo nano /etc/sssd/sssd.conf
+    sudo nano /etc/sssd/sssd.conf
 
 Contenido del fichero:
 
@@ -401,11 +401,11 @@ cache_credentials = true
 
 Permisos y reinicio:
 
-sudo chmod 600 /etc/sssd/sssd.conf
+    sudo chmod 600 /etc/sssd/sssd.conf
 
-sudo systemctl restart sssd
+    sudo systemctl restart sssd
 
-sudo systemctl status sssd
+    sudo systemctl status sssd
 
 <img width="858" height="1013" alt="captura 43" src="https://github.com/user-attachments/assets/d482c47e-4be2-442e-a6f9-203a22c10f2a" />
 
@@ -425,13 +425,13 @@ getent passwd alumno2
 
 Prueba de autenticación:
 
-su - alumno1   # Contraseña: Mindverse2025!
+    su - alumno1   # Contraseña: Mindverse2025!
 
-whoami
+    whoami
 
-id
+    id
 
-exit
+    exit
 
 El sistema resuelve correctamente ambos usuarios desde el directorio LDAP. La sesión de alumno1 se abre con éxito, whoami devuelve 'alumno1' y el comando id muestra uid=1001 con sus grupos correctos.
 
@@ -569,23 +569,19 @@ Se comprueba que los usuarios del dominio AD pueden autenticarse en el cliente U
 
 Resolución de usuarios AD:
 
-getent passwd alumno1@mindverse.local
+    getent passwd alumno1@mindverse.local
 
 Autenticación:
 
-su - alumno1@mindverse.local   # Contraseña: Mindverse2025!
-whoami
+    su - alumno1@mindverse.local   # Contraseña: Mindverse2025!
+    whoami
 
-id
+    id
 
-exit
+    exit
 
 Logs de autenticación:
 
-sudo tail -20 /var/log/auth.log
+    sudo tail -20 /var/log/auth.log
 
 En un entorno real con Windows Server, estos comandos devolverían el usuario resuelto desde el controlador de dominio AD y la sesión se abriría correctamente con los grupos del dominio asignados.
-
-
-
-
