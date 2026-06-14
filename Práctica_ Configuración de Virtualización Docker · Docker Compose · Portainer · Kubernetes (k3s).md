@@ -1,4 +1,4 @@
-# Práctica: Configuración de Virtualización Docker · Docker Compose · Portainer · Kubernetes (k3s)
+# Configuración de Virtualización Docker, Docker Compose, Portainer, Kubernetes
 
 # Paso 1 – Verificación de Docker instalado
 
